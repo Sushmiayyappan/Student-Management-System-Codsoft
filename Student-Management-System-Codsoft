@@ -1,0 +1,166 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class Main {
+    static class Student {
+        private String name;
+        private int rollNumber;
+        private String grade;
+
+        public Student(String name, int rollNumber, String grade) {
+            this.name = name;
+            this.rollNumber = rollNumber;
+            this.grade = grade;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getRollNumber() {
+            return rollNumber;
+        }
+
+        public String getGrade() {
+            return grade;
+        }
+    }
+
+    static class StudentManagementSystem {
+        private ArrayList<Student> students;
+
+        public StudentManagementSystem() {
+            this.students = new ArrayList<>();
+        }
+
+        public void addStudent(Student student) {
+            students.add(student);
+        }
+
+        public void removeStudent(int rollNumber) {
+            students.removeIf(student -> student.getRollNumber() == rollNumber);
+        }
+
+        public Student searchStudent(int rollNumber) {
+            for (Student student : students) {
+                if (student.getRollNumber() == rollNumber) {
+                    return student;
+                }
+            }
+            return null;
+        }
+
+        public String displayAllStudents() {
+            StringBuilder result = new StringBuilder();
+            for (Student student : students) {
+                result.append("Name: ").append(student.getName()).append(", Reg Number: ").append(student.getRollNumber())
+                        .append(", Grade: ").append(student.getGrade()).append("\n");
+            }
+            return result.toString();
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Student Management System");
+            frame.setSize(400, 300);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            JPanel panel = new JPanel();
+            frame.add(panel);
+            placeComponents(panel);
+
+            frame.setVisible(true);
+        });
+    }
+
+    private static void placeComponents(JPanel panel) {
+        panel.setLayout(null);
+
+        JLabel titleLabel = new JLabel("Student Management System");
+        titleLabel.setBounds(80, 10, 250, 25);
+        panel.add(titleLabel);
+
+        StudentManagementSystem studentManagementSystem = new StudentManagementSystem();
+
+        JButton addButton = new JButton("Add Pupil");
+        addButton.setBounds(10, 80, 150, 25);
+        panel.add(addButton);
+
+        JButton removeButton = new JButton("Remove Pupil");
+        removeButton.setBounds(200, 80, 150, 25);
+        panel.add(removeButton);
+
+        JButton searchButton = new JButton("Search Pupil");
+        searchButton.setBounds(10, 140, 150, 25);
+        panel.add(searchButton);
+
+        JButton displayButton = new JButton("Display All Pupil");
+        displayButton.setBounds(200, 140, 150, 25);
+        panel.add(displayButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(120, 200, 150, 25);
+        panel.add(exitButton);
+
+        // Add action listeners for the buttons
+        addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Handle add student action
+                String name = JOptionPane.showInputDialog("Enter Pupilr name:");
+                int rollNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter roll number:"));
+                String grade = JOptionPane.showInputDialog("Enter grade:");
+
+                Student newStudent = new Student(name, rollNumber, grade);
+                studentManagementSystem.addStudent(newStudent);
+                JOptionPane.showMessageDialog(null, "Pupil added successfully!");
+            }
+        });
+
+        removeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Handle remove student action
+                int rollToRemove = Integer.parseInt(JOptionPane.showInputDialog("Enter reg number to remove:"));
+                studentManagementSystem.removeStudent(rollToRemove);
+                JOptionPane.showMessageDialog(null, "Pupil removed successfully!");
+            }
+        });
+
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Handle search student action
+                int rollToSearch = Integer.parseInt(JOptionPane.showInputDialog("Enter reg number to search:"));
+                Student foundStudent = studentManagementSystem.searchStudent(rollToSearch);
+                if (foundStudent != null) {
+                    JOptionPane.showMessageDialog(null, "Pupil found:\n" +
+                            "Name: " + foundStudent.getName() +
+                            "\nRoll Number: " + foundStudent.getRollNumber() +
+                            "\nGrade: " + foundStudent.getGrade());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Pupil not found.");
+                }
+            }
+        });
+
+        displayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Handle display all students action
+                String studentsInfo = studentManagementSystem.displayAllStudents();
+                if (!studentsInfo.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "All Pupilr:\n" + studentsInfo);
+                } else {
+                    JOptionPane.showMessageDialog(null, "No Pupil to display.");
+                }
+            }
+        });
+
+        exitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Handle exit action
+                System.exit(0);
+            }
+        });
+    }
+}
